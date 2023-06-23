@@ -11,7 +11,7 @@ uint16_t gu16_cmd_not_found_called = 0;
 bool gb_cmd_help_called = false;
 bool gb_cmd_testcommand1_called = false;
 bool gb_cmd_testcommand2_called = false;
-
+bool gb_cmd_testcommand3_called = false;
 
 
 void cmd_not_found(char *pc_Cmd)
@@ -54,6 +54,18 @@ int cmd_testcommand2(int argc, char *argv[])
 }
 
 
+int cmd_testcommand3(int argc, char *argv[])
+{
+  gb_cmd_testcommand3_called = true;
+  TEST_ASSERT_EQUAL_INT16(4, argc);
+  TEST_ASSERT_EQUAL_STRING("test3", argv[0]);
+  TEST_ASSERT_EQUAL_STRING("", argv[1]);  
+  TEST_ASSERT_EQUAL_STRING("", argv[2]);
+  TEST_ASSERT_EQUAL_STRING(" \" \" ", argv[3]);
+  return 0;
+}
+
+
 
 void setUp(void) 
 {
@@ -62,6 +74,7 @@ void setUp(void)
   myShell.addCommandCallback("help", &cmd_help);
   myShell.addCommandCallback("test1", &cmd_testcommand1);
   myShell.addCommandCallback("test2", &cmd_testcommand2);
+  myShell.addCommandCallback("test3", &cmd_testcommand3);
 
   myShell.begin();
 }
@@ -110,6 +123,12 @@ void test_testcommand_escaped(void)
   TEST_ASSERT_EQUAL(true, gb_cmd_testcommand2_called);
 }
 
+void test_testcommand_empty_quotes(void) 
+{
+  send_string("test3 \"\" '' ' \" \" '\r");
+  TEST_ASSERT_EQUAL(true, gb_cmd_testcommand3_called);
+}
+
 
 void setup()
 {
@@ -120,6 +139,7 @@ void setup()
   RUN_TEST(test_help);
   RUN_TEST(test_testcommand_normal);  
   RUN_TEST(test_testcommand_escaped);
+  RUN_TEST(test_testcommand_empty_quotes);
 
   UNITY_END(); // stop unit testing
 }
