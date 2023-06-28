@@ -6,6 +6,7 @@ class Shell
 {
   - PromptCallback : TPromptCallback *
   - DefaultCmdCallback : TDefaultCmdCallback *
+  - CmdErrorCallback : TCmdErrorCallback *
   - Commands : struct Command[]
   - NumberOfCommands : uint16
   ....
@@ -14,6 +15,7 @@ class Shell
   ----
   + setPromptCallback(TPromptCallback)
   + setCommandNotFoundCallback(TDefaultCmdCallback)
+  + setCommandErrorCallback(TCmdErrorCallback)
   + addCommandCallback(Cmd, TCmdCallback)
   ....
   + begin()
