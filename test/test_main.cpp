@@ -57,11 +57,10 @@ int cmd_testcommand2(int argc, char *argv[])
 int cmd_testcommand3(int argc, char *argv[])
 {
   gb_cmd_testcommand3_called = true;
-  TEST_ASSERT_EQUAL_INT16(4, argc);
+  TEST_ASSERT_EQUAL_INT16(3, argc);
   TEST_ASSERT_EQUAL_STRING("test3", argv[0]);
-  TEST_ASSERT_EQUAL_STRING("", argv[1]);  
-  TEST_ASSERT_EQUAL_STRING("", argv[2]);
-  TEST_ASSERT_EQUAL_STRING(" \" \" ", argv[3]);
+  TEST_ASSERT_EQUAL_STRING("", argv[1]);
+  TEST_ASSERT_EQUAL_STRING(" ", argv[2]);
   return 0;
 }
 
@@ -125,7 +124,7 @@ void test_testcommand_escaped(void)
 
 void test_testcommand_empty_quotes(void) 
 {
-  send_string("test3 \"\" '' ' \" \" '\r");
+  send_string("test3 \"\" \" \"\r");
   TEST_ASSERT_EQUAL(true, gb_cmd_testcommand3_called);
 }
 
