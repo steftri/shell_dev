@@ -8,10 +8,13 @@
 Shell myShell;
 
 uint16_t gu16_cmd_not_found_called = 0;
+uint16_t gu16_cmd_error_called = 0;
 bool gb_cmd_help_called = false;
+bool gb_cmd_error_called = false;
 bool gb_cmd_testcommand1_called = false;
 bool gb_cmd_testcommand2_called = false;
 bool gb_cmd_testcommand3_called = false;
+bool gb_cmd_testcommand4_called = false;
 
 
 void cmd_not_found(char *pc_Cmd)
@@ -30,6 +33,15 @@ int cmd_help(int argc, char *argv[])
   TEST_ASSERT_EQUAL_STRING("help", argv[0]);
   return 0;
 }
+
+
+void cmd_error(char *pc_Cmd, int rc)
+{
+  gu16_cmd_error_called++;
+  TEST_ASSERT_EQUAL_INT(5, rc);
+  return;
+}
+
 
 
 int cmd_testcommand1(int argc, char *argv[])
@@ -65,15 +77,24 @@ int cmd_testcommand3(int argc, char *argv[])
 }
 
 
+int cmd_testcommand4(int argc, char *argv[])
+{
+  gb_cmd_testcommand4_called = true;
+  return 5;
+}
+
+
 
 void setUp(void) 
 {
   // set stuff up here
   myShell.setCommandNotFoundCallback(&cmd_not_found);
+  myShell.setCommandErrorCallback(&cmd_error);
   myShell.addCommandCallback("help", &cmd_help);
   myShell.addCommandCallback("test1", &cmd_testcommand1);
   myShell.addCommandCallback("test2", &cmd_testcommand2);
   myShell.addCommandCallback("test3", &cmd_testcommand3);
+  myShell.addCommandCallback("test4", &cmd_testcommand4);
 
   myShell.begin();
 }
@@ -129,6 +150,13 @@ void test_testcommand_empty_quotes(void)
 }
 
 
+void test_command_error(void) 
+{
+  send_string("test4\r");
+  TEST_ASSERT_EQUAL(1, gu16_cmd_error_called);
+}
+
+
 void setup()
 {
   delay(2000); // service delay
@@ -139,6 +167,7 @@ void setup()
   RUN_TEST(test_testcommand_normal);  
   RUN_TEST(test_testcommand_escaped);
   RUN_TEST(test_testcommand_empty_quotes);
+  RUN_TEST(test_command_error);
 
   UNITY_END(); // stop unit testing
 }
