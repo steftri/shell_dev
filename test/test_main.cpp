@@ -1,4 +1,7 @@
+#ifdef ARDUINO  
 #include <Arduino.h>
+#endif
+
 #include <unity.h>
 
 #include "shell.h"
@@ -159,7 +162,9 @@ void test_command_error(void)
 
 void setup()
 {
+#ifdef ARDUINO  
   delay(2000); // service delay
+#endif  
   UNITY_BEGIN();
 
   RUN_TEST(test_not_found);
@@ -177,3 +182,15 @@ void setup()
 void loop()
 {
 }
+
+
+
+#ifndef ARDUINO
+// only needed if unit test is running in an native environment
+int main(int argc, char *argv[])
+{
+  setup();
+  loop();
+  return 0;
+}
+#endif
