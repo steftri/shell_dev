@@ -1,3 +1,4 @@
-[submodule "lib/shell"]
-	path = lib/shell
-	url = https://github.com/steftri/shell
+[submodule "lib/TinyShell"]
+	path = lib/TinyShell
+	url = https://github.com/steftri/TinyShell.git
+	branch = develop
