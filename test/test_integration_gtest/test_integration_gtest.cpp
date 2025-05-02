@@ -3,6 +3,15 @@
 #include "TinyShell.h"
 
 
+class MyTinyShellCommand : public TinyShellCommand 
+{
+public:
+  int exec(int argc, char *argv[]) override 
+  {
+    return 0;
+  }
+};
+
 
 class TinyShellIntegrationTest : public ::testing::Test 
 {
