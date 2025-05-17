@@ -2,6 +2,8 @@
 
 #ifdef ARDUINO  
 #include <Arduino.h>   // needed for service delay
+#else
+#include <string.h>    // needed for strlen
 #endif
 
 #include "TinyShell.h"
@@ -10,30 +12,56 @@
 
 TinyShell myShell;
 
+bool gb_cmd_testcommand1_called = false;
+
+
+class MyTinyShellCommand : public TinyShellCommand 
+{
+public:
+  int exec(int argc, char *argv[]) override 
+  {
+    gb_cmd_testcommand1_called = true;
+    return 0; // Success
+  }
+};
+
+
 
 
 void setUp(void) 
 {
   // set stuff up here
-  (void)myShell.begin();
 }
 
 void tearDown(void) 
 {
   // clean stuff up here
-  myShell.end();
 }
 
 
 
-void test_case_1(void) 
+void test_add_command(void) 
 {
-  // test step 1: check default value
- // TEST_ASSERT_EQUAL_UINT32(0, myArduinoLibrary.getValue());
+  MyTinyShellCommand myCommand1;
 
-  // test step 2: check set value
- // myArduinoLibrary.setValue(4711);
- // TEST_ASSERT_EQUAL_UINT32(4711, myArduinoLibrary.getValue());
+  (void)myShell.begin();
+  
+  // Add a command to the shell  
+  TEST_ASSERT_EQUAL_UINT8((uint8_t)myShell.addCommand("mycommand1", &myCommand1), (uint8_t)TinyShell::ERc::OK);
+
+  TEST_ASSERT_FALSE(gb_cmd_testcommand1_called);
+
+  // Simulate input for the command
+  // Note: The command is terminated with a carriage return '\r'
+  const char *input = "mycommand1\r";
+  for (size_t i = 0; i < strlen(input); ++i) 
+  {
+    myShell.putChar(input[i]);
+  }
+
+  TEST_ASSERT_TRUE(gb_cmd_testcommand1_called);
+
+  (void)myShell.end();
 }
 
 
@@ -45,7 +73,7 @@ void setup()
 #endif    
     UNITY_BEGIN();
 
-    RUN_TEST(test_case_1);
+    RUN_TEST(test_add_command);
 
     UNITY_END(); // stop unit testing
 }

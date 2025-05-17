@@ -42,8 +42,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
       find_package(Threads REQUIRED)
 
       # Link GoogleTest to unit and integration tests
-      target_link_libraries(UnitTests PRIVATE ${GTEST_LIBRARIES} Threads::Threads)
-      target_link_libraries(IntegrationTests PRIVATE ${GTEST_LIBRARIES} Threads::Threads)
+      target_link_libraries(test_unit_gtest PRIVATE ${GTEST_LIBRARIES} Threads::Threads)
+      target_link_libraries(test_integration_gtest PRIVATE ${GTEST_LIBRARIES} Threads::Threads)
     endif()
 
   else()

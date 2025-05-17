@@ -1,8 +1,11 @@
-# CMake configuration for unit tests
-add_executable(UnitTests test_unit_gtest.cpp)
+set(TEST_NAME test_unit_gtest)
 
-# Link the library to the unit tests
-target_link_libraries(UnitTests PRIVATE TinyShell)
+
+# CMake configuration for unit tests
+add_executable(${TEST_NAME} test_unit_gtest.cpp)
+
+# Link the library to the integration tests
+target_link_libraries(${TEST_NAME} PRIVATE TinyShell)
 
 # Enable testing for this target
-add_test(NAME UnitTests COMMAND UnitTests)
+add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})

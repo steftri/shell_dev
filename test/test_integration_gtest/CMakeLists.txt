@@ -1,8 +1,11 @@
+set(TEST_NAME test_integration_gtest)
+
+
 # CMake configuration for integration tests
-add_executable(IntegrationTests test_integration_gtest.cpp)
+add_executable(${TEST_NAME} test_integration_gtest.cpp)
 
 # Link the library to the integration tests
-target_link_libraries(IntegrationTests PRIVATE TinyShell)
+target_link_libraries(${TEST_NAME} PRIVATE TinyShell)
 
 # Enable testing for this target
-add_test(NAME IntegrationTests COMMAND IntegrationTests)
+add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
