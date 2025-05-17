@@ -1,37 +1,65 @@
 #ifdef ARDUINO 
 #include <Arduino.h> 
-#if (ARDUINO_AVR_UNO || ARDUINO_AVR_NANO || ARDUINO_AVR_MINI || ARDUINO_AVR_MEGA || ARDUINO_AVR_MEGA2560)
-#include <avr8-stub.h>  // needed for debug_init() - works only on Arduinos with ATmega CPU 
-#endif
 #else
 #include <iostream>
 #include <inttypes.h>
 #endif
+
+#include <TinyShell.h>
+
+
+#ifdef ARDUINO
+TinyShell myShell(&Serial); 
+#else
+TinyShell myShell;
+#endif
+
+
+class CmdEcho : public TinyShellCommand 
+{
+public:
+  int exec(int argc, char *argv[]) override 
+  {
+    if(argc<2) 
+    {
+      Serial.println(F("usage: echo <text>"));
+      return 5; // an error occured - return anything different to 0
+    }
+
+    for(int i=1; i<argc; i++) 
+    {
+      Serial.print(argv[i]);
+      Serial.print(F(" "));
+    }
+    Serial.println();
+
+    return 0; // command executed sucessfully
+  }
+};
+CmdEcho myCmdEcho;
 
 
 
 void setup()
 { 
 #ifdef ARDUINO
-# if (ARDUINO_AVR_UNO || ARDUINO_AVR_NANO || ARDUINO_AVR_MINI || ARDUINO_AVR_MEGA || ARDUINO_AVR_MEGA2560)
-  debug_init();
-# else
   Serial.begin(115200);
   Serial.println(__LIBRARY_NAME__);
   Serial.println(__DATE__ " " __TIME__);
-# endif
 #else
   std::cout << __LIBRARY_NAME__ << std::endl;
   std::cout << __DATE__ " " __TIME__ << std::endl;
 #endif
+
+  myShell.addCommand("echo", &myCmdEcho);
+  myShell.begin();
 }
 
 
 
 void loop()
 {
-  static volatile uint8_t value = 0;
-  value = value+1;   // do something very simple
+  myShell.loop();
 }
 
 
